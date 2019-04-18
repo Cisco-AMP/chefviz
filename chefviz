@@ -1,0 +1,151 @@
+#!/usr/bin/env ruby
+
+# Runner script for the ChefViz utility
+
+require 'optparse'
+require 'json'
+require './lib/config.rb'
+require './lib/graph.rb'
+
+
+################################################################################
+# Entry point
+
+MODES = ['setup', 'graph'].freeze
+DEFAULT_CONFIG_FILE = '.config'.freeze
+
+usage_message = <<-STR
+Usage: chefviz <command> [command-options] [command-parameters]
+
+Tool for generating call graphs for chef roles. 
+For help using a specific command, try the following:
+
+    ./chefviz <command> -h
+
+COMMANDS
+
+    setup       Configure a new chef repository for use with ChefViz
+    graph       Generate a call graph for a specified chef role      
+STR
+
+if ARGV.empty? || MODES.none? { |m| m.include? ARGV[0] }
+  puts usage_message
+  exit 0
+end
+
+command = ARGV[0]
+
+ARGV.shift
+
+# Option parser for graph mode
+graph_options = {:name => nil, :role => nil, :config => nil, :filename => nil}
+
+graph_option_parser = OptionParser.new do |opts|
+      opts.banner = "Usage: chefviz graph <name ><role> [options]
+Description: Generate a call graph for the specified chef role."
+
+      opts.on('-n', '--name [NAME]', 'Chef config to use') do |n|
+        graph_options[:name] = n unless n.to_s.empty?
+      end
+      
+      opts.on('-r', '--role [ROLE]', 'Chef role') do |r|
+        graph_options[:role] = r unless r.to_s.empty?
+      end
+      
+      opts.on('-c', '--conifg-file [CONFIG]', 'Configuration file (default: ChefViz config file)') do |c|
+        graph_options[:config] = c unless c.to_s.empty?
+      end
+
+      opts.on('-o', '--output-filename [FILENAME]', 'Name for output file (default: <role>.pdf)') do |o|
+        graph_options[:filename] = o unless o.to_s.empty?
+      end
+      
+      opts.on_tail('-h', '--help', 'Show this message') do
+        puts opts
+        exit(0)
+      end
+end
+
+# Option parser for setup mode
+setup_options = {:name => nil, :roles_path => nil, :cookbooks_path => nil}
+
+setup_option_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: chefviz setup <parameters>
+Description: Configure a chef repo for use with the ChefViz tool.
+Options:"
+  opts.on('-n', '--repo-name [REPO_NAME]', 'Config name to assign to this repo') do |n|
+    setup_options[:name] = n unless n.to_s.empty?
+  end
+  
+  opts.on('-r', '--roles [ROLES_PATH]', 'Path to "roles" directory in target repo (default: <REPO_PATH>/roles)') do |r|
+    setup_options[:roles_path] = r unless r.to_s.empty?
+  end
+
+  opts.on('-c', '--cookbooks [COOKBOOKS_PATH]', 'Path to "cookbooks" directory in target repo (default: <REPO_PATH>/cookbooks)') do |c|
+    setup_options[:cookbooks_path] = c unless c.to_s.empty?
+  end
+end
+
+# Parse remaining command line options for 'setup' mode
+if command == 'setup'
+  setup_option_parser.parse!
+
+  unless setup_options[:name] 
+    puts "You must specify a name for this configuration!"
+    puts setup_option_parser.help
+    exit 0
+  end
+
+  # Use standard defaults if role and/or cookbook paths weren't specified
+  setup_options[:roles_path] = "#{setup_options[:base_path]}/roles" if setup_options[:roles_path].nil?
+  setup_options[:cookbooks_path] = "#{setup_options[:base_path]}/cookbooks" if setup_options[:cookbooks_path].nil?
+
+  
+  # Write new config
+  setup_config = Config.new(DEFAULT_CONFIG_FILE)
+  begin
+    if setup_config.write_config(setup_options)
+      puts "Configuration was updated for #{setup_options[:name]}!" 
+    else
+      puts "Configuration not updated for #{setup_options[:name]}." 
+    end
+    exit 0
+  rescue ConfigError => e
+    puts e
+    puts "Configuration not updated for #{setup_options[:name]}."
+    exit 1
+  end
+  
+# Parse remaining command line options for 'graph' mode
+else  
+  graph_option_parser.parse!
+
+  unless graph_options[:role] && graph_options[:name]
+    puts "You must specify the name of the chef config to use and the role!"
+    puts graph_option_parser.help
+    exit 0
+  end
+
+  # Users can optionally specify their own config file
+  config_file = graph_options[:config] ? graph_options[:config] : DEFAULT_CONFIG_FILE
+
+  graph_config = Config.new(config_file).read_config(graph_options[:name])
+  
+  if graph_config.nil? || graph_config.empty?
+    puts "No configuration found for Chef repo #{graph_options[:name]}!"
+    puts "To generate graphs for #{graph_options[:name]} with ChefViz, please first run the following:"
+    puts "chefviz setup -n #{graph_options[:name]} -r <path to roles dir> -c <path to cookbooks dir>"
+    exit 0
+  end
+
+  graph = Graph.new(graph_config, graph_options[:role])
+
+  begin
+    graph.make_graph(graph_options[:filename])
+  rescue GraphError => e
+    puts e
+    puts "Graph not generated for #{graph_options[:role]}."
+    exit 1
+  end
+  puts "Graph was generated for #{graph_options[:role]}!" 
+end
