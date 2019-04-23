@@ -13,7 +13,7 @@ class Config
       begin
         config_hash = JSON.parse(File.read(@config_file))
       rescue StandardError => e
-         raise ConfigError.new("parsing configuration file: #{e}")
+        raise ConfigError.new("parsing configuration file: #{e}")
       end
     end
     config_hash
@@ -24,6 +24,13 @@ class Config
     read_config_file[name]
   end
 
+  # Generate a formatted hash appropriate for our file structure
+  def format_hash(key, input_hash)
+    formatted_hash = {}
+    formatted_hash[key] = input_hash.dup.tap { |input| input.delete(:name) }
+    formatted_hash
+  end
+  
   # Write a new config into the file
   def write_config(new_config)
     config_to_write = {}
@@ -31,8 +38,7 @@ class Config
     new_name = new_config[:name]
 
     # First format the input hash to be appropriate for our file format
-    formatted_config[new_name] = new_config.dup.tap { |nc| nc.delete(:name) }
-
+    formatted_config = format_hash(new_name, new_config)
     current_config = read_config_file
 
     if current_config.key? new_name
@@ -45,6 +51,7 @@ class Config
     end
     config_file = File.open(@config_file, 'w')
     config_file.puts config_to_write.to_json
+    config_file.close
     return true
   end
 end

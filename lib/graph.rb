@@ -12,8 +12,7 @@ class Graph
     @config = config 
   end
 
-  def make_graph(filename = nil)
-    filename = "#{strip_extension(@role)}.pdf" if filename.nil?
+  def make_graph
     g = Graphviz::Graph.new
     runlist = process_role(@role)
 
@@ -28,13 +27,20 @@ class Graph
       end
     end
 
+    g
+  end
+
+  def write_graph_file(g, filename = nil)
+    filename = "#{strip_extension(@role)}.pdf" if filename.nil?
     Graphviz::output(g, :path => filename)
   end
   
   private
 
+  
   def strip_extension(name)
-    ['.json', '.rb'].each do |ext|
+    # Use of array allows for extensibility once we add support for ruby-formatted roels
+    ['.json'].each do |ext|
       return name.gsub!(/#{ext}\z/, '') if name.end_with? ext
     end
     name
@@ -43,16 +49,22 @@ class Graph
   def process_role(role)
     role_file = "#{@config['roles_path']}/#{role}"
 
+    # At this point we only support json-formatted roles.
+    # Adding support for ruby-formatted roles is future work.
+    if role.end_with? '.rb'
+      raise GraphError.new("processing role", "ChefViz does not yet support ruby-formatted roles! Please use JSON-formatted roles instead.")
+    end
+    
     # Roles specified inside other roles may not have a file extentension.
     # In such cases, attempt to find the correct extension.
     unless File.file? role_file
-      role_file = ["#{role_file}.json", "#{role_file}.rb"].each.select { |r| File.file? r }.first
-
+      # Use of array allows for extensibility once we add support for ruby-formatted roels
+      role_file = ["#{role_file}.json"].each.select { |r| File.file? r }.first
+      
       if role_file.nil?
         raise GraphError.new("processing role", "Could not find any file named #{role}.json or #{role}.rb in #{@config['roles_path']}.")
       end
     end
-    
     
     begin
       role_hash = JSON.parse(File.read(role_file))
@@ -97,4 +109,5 @@ class Graph
     
     default_list
   end
+
 end
