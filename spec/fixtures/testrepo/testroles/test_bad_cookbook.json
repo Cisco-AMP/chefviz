@@ -1,0 +1,9 @@
+{
+  "name": "test_bad_cookbook",
+  "json_class": "Chef::Role",
+  "description": "A test role containing a bogus cookbook.",
+  "chef_type": "role",
+  "run_list": [
+  "recipe[foo::bogus]"
+  ]
+}

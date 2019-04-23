@@ -39,7 +39,7 @@ class Graph
 
   
   def strip_extension(name)
-    # Use of array allows for extensibility once we add support for ruby-formatted roels
+    # Use of array allows for extensibility once we add support for ruby-formatted roles
     ['.json'].each do |ext|
       return name.gsub!(/#{ext}\z/, '') if name.end_with? ext
     end
@@ -58,7 +58,7 @@ class Graph
     # Roles specified inside other roles may not have a file extentension.
     # In such cases, attempt to find the correct extension.
     unless File.file? role_file
-      # Use of array allows for extensibility once we add support for ruby-formatted roels
+      # Use of array allows for extensibility once we add support for ruby-formatted roles
       role_file = ["#{role_file}.json"].each.select { |r| File.file? r }.first
       
       if role_file.nil?
