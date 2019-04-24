@@ -96,10 +96,11 @@ if command == 'setup'
     exit 0
   end
 
-  # Use standard defaults if role and/or cookbook paths weren't specified
-  setup_options[:roles_path] = "#{setup_options[:base_path]}/roles" if setup_options[:roles_path].nil?
-  setup_options[:cookbooks_path] = "#{setup_options[:base_path]}/cookbooks" if setup_options[:cookbooks_path].nil?
-
+  unless setup_options[:roles_path] && setup_options[:cookbooks_path]
+    puts "Missing specification for one or more chef directories!"
+    puts setup_option_parser.help
+    exit 0
+  end
   
   # Write new config
   setup_config = Config.new(DEFAULT_CONFIG_FILE)

@@ -52,12 +52,10 @@ Usage: chefviz setup <parameters>
 Description: Configure a chef repo for use with the ChefViz tool.
 Options:
     -n, --repo-name [REPO_NAME]      Name to assign to this repo
-    -r, --roles [ROLES_PATH]         Path to "roles" directory in target repo (default: <REPO_PATH>/roles)
-    -c, --cookbooks [COOKBOOKS_PATH] Path to "cookbooks" directory in target repo (default: <REPO_PATH>/cookbooks)
+    -r, --roles [ROLES_PATH]         Path to "roles" directory in target repo
+    -c, --cookbooks [COOKBOOKS_PATH] Path to "cookbooks" directory in target repo
 	    
 ```
-If you do not specify paths to the roles and cookbooks directories for your Chef repo, the standard 
-directory locations will be used by default.
 
 Example:
 ```
