@@ -52,12 +52,10 @@ Usage: chefviz setup <parameters>
 Description: Configure a chef repo for use with the ChefViz tool.
 Options:
     -n, --repo-name [REPO_NAME]      Name to assign to this repo
-    -r, --roles [ROLES_PATH]         Path to "roles" directory in target repo (default: <REPO_PATH>/roles)
-    -c, --cookbooks [COOKBOOKS_PATH] Path to "cookbooks" directory in target repo (default: <REPO_PATH>/cookbooks)
+    -r, --roles [ROLES_PATH]         Path to "roles" directory in target repo
+    -c, --cookbooks [COOKBOOKS_PATH] Path to "cookbooks" directory in target repo
 	    
 ```
-If you do not specify paths to the roles and cookbooks directories for your Chef repo, the standard 
-directory locations will be used by default.
 
 Example:
 ```
@@ -77,7 +75,7 @@ Usage: chefviz graph <name ><role> [options]
 Description: Generate a call graph for the specified chef role.
     -n, --name [NAME]                Chef config to use
     -r, --role [ROLE]                Chef role
-    -c, --conifg-file [CONFIG]       Configuration file (default: ChefViz config file)
+    -c, --config-file [CONFIG]       Configuration file (default: ChefViz config file)
     -o, --output-filename [FILENAME] Name for output file (default: <role>.pdf)
     -h, --help                       Show this message
 ```

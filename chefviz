@@ -52,7 +52,7 @@ Description: Generate a call graph for the specified chef role."
         graph_options[:role] = r unless r.to_s.empty?
       end
       
-      opts.on('-c', '--conifg-file [CONFIG]', 'Configuration file (default: ChefViz config file)') do |c|
+      opts.on('-c', '--config-file [CONFIG]', 'Configuration file (default: ChefViz config file)') do |c|
         graph_options[:config] = c unless c.to_s.empty?
       end
 
@@ -96,10 +96,11 @@ if command == 'setup'
     exit 0
   end
 
-  # Use standard defaults if role and/or cookbook paths weren't specified
-  setup_options[:roles_path] = "#{setup_options[:base_path]}/roles" if setup_options[:roles_path].nil?
-  setup_options[:cookbooks_path] = "#{setup_options[:base_path]}/cookbooks" if setup_options[:cookbooks_path].nil?
-
+  unless setup_options[:roles_path] && setup_options[:cookbooks_path]
+    puts "Missing specification for one or more chef directories!"
+    puts setup_option_parser.help
+    exit 0
+  end
   
   # Write new config
   setup_config = Config.new(DEFAULT_CONFIG_FILE)
