@@ -77,11 +77,11 @@ Options:"
     setup_options[:name] = n unless n.to_s.empty?
   end
   
-  opts.on('-r', '--roles [ROLES_PATH]', 'Path to "roles" directory in target repo (default: <REPO_PATH>/roles)') do |r|
+  opts.on('-r', '--roles [ROLES_PATH]', 'Path to "roles" directory in target repo') do |r|
     setup_options[:roles_path] = r unless r.to_s.empty?
   end
 
-  opts.on('-c', '--cookbooks [COOKBOOKS_PATH]', 'Path to "cookbooks" directory in target repo (default: <REPO_PATH>/cookbooks)') do |c|
+  opts.on('-c', '--cookbooks [COOKBOOKS_PATH]', 'Path to "cookbooks" directory in target repo') do |c|
     setup_options[:cookbooks_path] = c unless c.to_s.empty?
   end
 end
