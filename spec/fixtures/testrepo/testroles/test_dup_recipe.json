@@ -1,0 +1,10 @@
+{
+  "name": "test_dup_recipes",
+  "json_class": "Chef::Role",
+  "description": "A test role that will result in a runlist with duplicate entries.",
+  "chef_type": "role",
+  "run_list": [
+      "recipe[foo::service_start]",
+      "role[test_recipes_only]"
+  ]
+}

@@ -141,7 +141,7 @@ else
   graph = Graph.new(graph_config, graph_options[:role])
 
   begin
-    graph.make_graph(graph_options[:filename])
+    graph.write_graph_file(graph.make_graph, graph_options[:filename])
   rescue GraphError => e
     puts e
     puts "Graph not generated for #{graph_options[:role]}."
