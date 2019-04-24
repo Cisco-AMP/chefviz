@@ -75,7 +75,7 @@ Usage: chefviz graph <name ><role> [options]
 Description: Generate a call graph for the specified chef role.
     -n, --name [NAME]                Chef config to use
     -r, --role [ROLE]                Chef role
-    -c, --conifg-file [CONFIG]       Configuration file (default: ChefViz config file)
+    -c, --config-file [CONFIG]       Configuration file (default: ChefViz config file)
     -o, --output-filename [FILENAME] Name for output file (default: <role>.pdf)
     -h, --help                       Show this message
 ```
