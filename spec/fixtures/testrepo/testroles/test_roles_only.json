@@ -1,0 +1,9 @@
+{
+  "name": "test_roles_only",
+  "json_class": "Chef::Role",
+  "description": "A test role continaing only other roles",
+  "chef_type": "role",
+  "run_list": [
+  "role[test_recipes_only]"    
+  ]
+}
