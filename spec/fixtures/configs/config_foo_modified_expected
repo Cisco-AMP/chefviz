@@ -1,0 +1,1 @@
+{"foo":{"roles_path":"~/foo2/chef/roles","cookbooks_path":"~/foo2/chef/cookbooks"},"bar":{"roles_path":"~/bar/chef/roles","cookbooks_path":"~/bar/chef/cookbooks"}}

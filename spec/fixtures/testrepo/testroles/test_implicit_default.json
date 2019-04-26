@@ -1,0 +1,9 @@
+{
+  "name": "test_implicit_default",
+  "json_class": "Chef::Role",
+  "description": "Test role with a default recipe implicitly specified.",
+  "chef_type": "role",
+  "run_list": [
+  "recipe[foo]"
+  ]
+}
