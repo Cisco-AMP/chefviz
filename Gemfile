@@ -1,4 +1,4 @@
-source('https://nexus.engine.sourcefire.com/repository/gems/')
+source('https://rubygems.org')
 
 gem 'graphviz'
 gem 'highline'

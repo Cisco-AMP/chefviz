@@ -88,3 +88,18 @@ configured using `chefviz setup`:
 $ ./chefviz graph -n test -r test1 -o ~/myimages/test1_graph.pdf
 Graph was generated for test1!
 ```
+
+## Tests
+
+Tests use the rpsec framework and can be run as follows:
+```
+$ rspec spec
+```
+
+## Contributions
+
+If you wish to contribute, please fork this repo and submit a pull request from your personal branch!
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
